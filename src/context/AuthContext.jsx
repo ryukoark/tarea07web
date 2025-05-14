@@ -2,8 +2,10 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext();
-
 export const useAuth = () => useContext(AuthContext);
+
+// Usa variable de entorno
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -12,8 +14,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      // Verify token with backend
-      axios.get('http://localhost:3000/api/auth/verify', {
+      axios.get(`${API_URL}/verify`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       .then(response => {
@@ -32,7 +33,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/login', {
+      const response = await axios.post(`${API_URL}/login`, {
         email,
         password
       });
@@ -47,7 +48,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      const response = await axios.post('http://localhost:3000/api/auth/register', userData);
+      const response = await axios.post(`${API_URL}/register`, userData);
       const { token, user } = response.data;
       localStorage.setItem('token', token);
       setUser(user);
@@ -75,4 +76,4 @@ export const AuthProvider = ({ children }) => {
       {!loading && children}
     </AuthContext.Provider>
   );
-}; 
+};
