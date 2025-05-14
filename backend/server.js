@@ -1,13 +1,12 @@
 import express from 'express';
-import pkg from 'pg';
+import pg from 'pg';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 
 dotenv.config();
-
-const { Pool } = pkg;
+const { Pool } = pg;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,12 +17,14 @@ app.use(express.json());
 
 // Configuración de PostgreSQL
 const pool = new Pool({
-  host: process.env.DB_HOST || 'dpg-d0i0npmmcj7s739j5qug-a',
-  port: process.env.DB_PORT || 5432,
-  user: process.env.DB_USER || 'tarea8_user',
-  password: process.env.DB_PASSWORD || 'b419YjOFQM5Fl2MghaneBclaoWxxlQDD',
-  database: process.env.DB_NAME || 'tarea8',
-  ssl: { rejectUnauthorized: false } // importante para Render
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 // Crear tabla si no existe
@@ -49,9 +50,7 @@ const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
-  if (!token) {
-    return res.status(401).json({ message: 'Token no proporcionado' });
-  }
+  if (!token) return res.status(401).json({ message: 'Token no proporcionado' });
 
   jwt.verify(token, process.env.JWT_SECRET || 'tu_secreto_secreto', (err, user) => {
     if (err) return res.status(403).json({ message: 'Token inválido' });
@@ -89,7 +88,7 @@ app.post('/api/auth/register', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error(error);
+    console.error('Error en registro:', error);
     res.status(500).json({ message: 'Error al registrar usuario' });
   }
 });
@@ -128,19 +127,19 @@ app.post('/api/auth/login', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error(error);
+    console.error('Error en login:', error);
     res.status(500).json({ message: 'Error al iniciar sesión' });
   }
 });
 
-// Verificar token
+// Verificación de sesión
 app.get('/api/auth/verify', authenticateToken, (req, res) => {
   res.json({ user: req.user });
 });
 
-// Iniciar servidor
+// Inicialización y levantamiento del servidor
 initializeDatabase().then(() => {
   app.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+    console.log(`Servidor corriendo en puerto ${PORT}`);
   });
 });
