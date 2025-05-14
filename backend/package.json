@@ -15,7 +15,9 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.9.1",
-    "perritoserio-backend": "file:"
+    "perritoserio-backend": "file:",
+    "pg": "^8.16.0",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "nodemon": "^3.0.3"
