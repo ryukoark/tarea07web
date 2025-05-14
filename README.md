@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # PerritoSerio - Sistema de Cupones de Apuestas
 
 Aplicación web para la gestión de cupones de apuestas con autenticación y roles de usuario.
@@ -59,3 +60,6 @@ src/
 - **Administrador**: Acceso completo al sistema
 - **Moderador**: Puede moderar contenido
 - **Usuario**: Acceso básico a los cupones 
+=======
+# tarea07web
+>>>>>>> f2cdc0136c68e2710ffce58fb4d09da5469ab5da
